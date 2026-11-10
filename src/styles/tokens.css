@@ -1,0 +1,185 @@
+:root {
+  --bg: #F0F8FF;
+  --surface: #FFFFFF;
+  --surface-tint: #E1EFFB;
+  --border: #CFE3F5;
+  --border-strong: #6F8BA5;
+  --text: #0B1F33;
+  --text-muted: #4A5F75;
+  --accent: #1D5FA8;
+  --accent-text: #FFFFFF;
+  --shadow: 0 2px 8px rgba(11, 31, 51, 0.08);
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur: 150ms;
+  --font-display: 'Bricolage Grotesque Variable', 'Inter Variable', system-ui, sans-serif;
+  --font-sans: 'Inter Variable', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --pattern-opacity: 0.045;
+  --grain-opacity: 0.028;
+}
+
+[data-theme="dark"] {
+  --bg: #0B1F33;
+  --surface: #12304D;
+  --surface-tint: #1A4166;
+  --border: #25507A;
+  --border-strong: #5682AD;
+  --text: #F0F8FF;
+  --text-muted: #A9C3DC;
+  --accent: #8EC5FF;
+  --accent-text: #0B1F33;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+  --pattern-opacity: 0.065;
+  --grain-opacity: 0.035;
+}
+
+/* Alice in Wonderland Easter Egg Theme (Light) */
+:root[data-wonderland="on"] {
+  --bg: #FCF7EE;
+  --surface: #FFFDF9;
+  --surface-tint: #F4E9D8;
+  --border: #E5D4BC;
+  --border-strong: #8C6F7B;
+  --text: #23141E;
+  --text-muted: #5E4253;
+  --accent: #9E1B40;
+  --accent-text: #FFFDF9;
+  --shadow: 0 2px 10px rgba(35, 20, 30, 0.09);
+  --pattern-opacity: 0.055;
+  --grain-opacity: 0.032;
+}
+
+/* Alice in Wonderland Easter Egg Theme (Dark) */
+:root[data-theme="dark"][data-wonderland="on"] {
+  --bg: #171021;
+  --surface: #221830;
+  --surface-tint: #2E1F40;
+  --border: #483263;
+  --border-strong: #8F759E;
+  --text: #FCF7EE;
+  --text-muted: #D6C2D1;
+  --accent: #FF9EBB;
+  --accent-text: #171021;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  --pattern-opacity: 0.075;
+  --grain-opacity: 0.04;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.625;
+  scroll-behavior: smooth;
+  scroll-padding-top: 84px;
+}
+
+body {
+  position: relative;
+  margin: 0;
+  min-height: 100dvh;
+  background-color: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+  isolation: isolate;
+}
+
+/* R-07 Identity Background Texture: Frost/Paper Grain + Constellation Motif */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: var(--pattern-opacity);
+  background-size: 96px 96px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96' fill='none' stroke='%231D5FA8' stroke-width='1' stroke-linecap='round'%3E%3Cg transform='translate(24 24)'%3E%3Cpath d='M0 -7 V7 M-6 -3.5 L6 3.5 M-6 3.5 L6 -3.5'/%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3C/g%3E%3Cg transform='translate(72 72)'%3E%3Cpath d='M0 -5 V5 M-4.3 -2.5 L4.3 2.5 M-4.3 2.5 L4.3 -2.5'/%3E%3C/g%3E%3Ccircle cx='72' cy='24' r='1' fill='%231D5FA8'/%3E%3Ccircle cx='24' cy='72' r='1' fill='%231D5FA8'/%3E%3C/svg%3E");
+}
+
+:root[data-theme="dark"] body::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96' fill='none' stroke='%238EC5FF' stroke-width='1' stroke-linecap='round'%3E%3Cg transform='translate(24 24)'%3E%3Cpath d='M0 -7 V7 M-6 -3.5 L6 3.5 M-6 3.5 L6 -3.5'/%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3C/g%3E%3Cg transform='translate(72 72)'%3E%3Cpath d='M0 -5 V5 M-4.3 -2.5 L4.3 2.5 M-4.3 2.5 L4.3 -2.5'/%3E%3C/g%3E%3Ccircle cx='72' cy='24' r='1' fill='%238EC5FF'/%3E%3Ccircle cx='24' cy='72' r='1' fill='%238EC5FF'/%3E%3C/svg%3E");
+}
+
+/* In Wonderland mode, the background constellation morphs into subtle Card Suits & Pocket Watch ticks */
+:root[data-wonderland="on"] body::before {
+  background-size: 108px 108px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='108' viewBox='0 0 108 108' fill='none' stroke='%239E1B40' stroke-width='1.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M27 20 C24 16 18 17 18 22 C18 27 27 31 27 34 C27 31 36 27 36 22 C36 17 30 16 27 20 Z'/%3E%3Cpolygon points='81,18 87,26 81,34 75,26'/%3E%3Ccircle cx='27' cy='81' r='7' stroke-dasharray='2 2'/%3E%3Cpath d='M27 77 V81 L30 83'/%3E%3Cpath d='M81 74 C77 79 74 81 74 85 C74 88 77 89 80 87 L78 91 H84 L82 87 C85 89 88 88 88 85 C88 81 85 79 81 74 Z'/%3E%3C/svg%3E");
+}
+
+:root[data-theme="dark"][data-wonderland="on"] body::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='108' viewBox='0 0 108 108' fill='none' stroke='%23FF9EBB' stroke-width='1.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M27 20 C24 16 18 17 18 22 C18 27 27 31 27 34 C27 31 36 27 36 22 C36 17 30 16 27 20 Z'/%3E%3Cpolygon points='81,18 87,26 81,34 75,26'/%3E%3Ccircle cx='27' cy='81' r='7' stroke-dasharray='2 2'/%3E%3Cpath d='M27 77 V81 L30 83'/%3E%3Cpath d='M81 74 C77 79 74 81 74 85 C74 88 77 89 80 87 L78 91 H84 L82 87 C85 89 88 88 88 85 C88 81 85 79 81 74 Z'/%3E%3C/svg%3E");
+}
+
+/* Tactile Fractal Paper / Ice Grain Overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+
+a[href],
+button,
+summary,
+select,
+label[for],
+input[type="checkbox"],
+input[type="radio"],
+[role="button"],
+[role="tab"],
+[role="switch"] {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

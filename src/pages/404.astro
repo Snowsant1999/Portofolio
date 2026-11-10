@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import Crystal from '../components/Crystal.astro';
+import { getDictionary, withBase } from '../i18n';
+
+const t = getDictionary('en');
+---
+
+<Base title="404 Not Found" locale="en">
+  <section class="wrap notfound-wrap">
+    <div class="notfound-crystal" aria-hidden="true">
+      <Crystal name="404-Melted" language="Python" size={180} />
+    </div>
+    <h1 class="font-display notfound-title">{t.notFound.title}</h1>
+    <p class="notfound-desc">{t.notFound.description}</p>
+    <div class="notfound-actions">
+      <a class="btn btn-primary" href={withBase('/')}>{t.notFound.backHome}</a>
+      <a class="btn btn-secondary" href={`${withBase('/')}#projects`}>{t.notFound.browseProjects}</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .notfound-wrap {
+    padding: 72px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .notfound-crystal {
+    color: var(--accent);
+    opacity: 0.75;
+  }
+
+  .notfound-title {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 700;
+  }
+
+  .notfound-desc {
+    margin: 0;
+    color: var(--text-muted);
+    max-width: 48ch;
+  }
+
+  .notfound-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+</style>
+

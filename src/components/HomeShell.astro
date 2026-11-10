@@ -1,0 +1,2028 @@
+---
+import { getCollection } from 'astro:content';
+import Crystal from './Crystal.astro';
+import { getGitHubSnapshot } from '../data/github';
+import aliceIntents from '../data/alice-intents.json';
+import { withBase, type Locale } from '../i18n';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+const isId = locale === 'id';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const gh = await getGitHubSnapshot();
+const projectBase = isId ? '/id/projects/' : '/projects/';
+
+const copy = {
+  kicker: isId ? 'PORTOFOLIO DEVELOPER · 2026' : 'DEVELOPER PORTFOLIO · 2026',
+  h1Before: isId ? 'Membangun ide menjadi ' : 'Turning ideas into ',
+  h1Accent: isId ? 'solusi digital.' : 'digital solutions.',
+  heroLead: isId
+    ? 'Saya Snowsant1999, developer yang senang mengeksplorasi web, aplikasi desktop, kecerdasan buatan, blockchain, dan cloud computing melalui proyek nyata.'
+    : 'I am Snowsant1999, a software developer exploring web applications, desktop systems, artificial intelligence, blockchain, and cloud computing through real repositories.',
+  ctaProjects: isId ? 'Lihat Proyek' : 'View Projects',
+  ctaContact: isId ? 'Hubungi' : 'Contact Me',
+  ctaCv: isId ? 'Unduh CV' : 'Download CV',
+  metaRepos: isId ? 'Repositori unggulan' : 'Featured repositories',
+  metaAreas: isId ? 'Area teknologi' : 'Technology areas',
+  metaGithub: isId ? 'Total repositori publik' : 'Public repositories',
+  profileSub: 'Developer · Indonesia',
+  statusLabel: 'BUILDING',
+  tabReadme: '~/profile/README.md',
+  tabCrystal: isId ? 'Kristal Seed' : 'Crystal Seed',
+  viewGithub: isId ? 'Lihat GitHub ↗' : 'View GitHub ↗',
+  sec1Eyebrow: '01 / SELECTED WORK',
+  sec1Title: isId ? 'Proyek pilihan' : 'Selected projects',
+  sec1Lead: isId
+    ? 'Enam repositori dari berbagai area teknologi. Buka halaman detail atau repositori untuk memeriksa kode.'
+    : 'Six repositories across five technology domains. Open the case study page or repository to inspect the work.',
+  filterAll: isId ? 'Semua' : 'All',
+  openDetail: isId ? 'Detail proyek' : 'Case study',
+  openRepo: isId ? 'Repositori' : 'Repository',
+  visualNote: isId
+    ? 'CATATAN: VISUAL DI ATAS ADALAH SIMULASI KONSEP INTERAKTIF, BUKAN SCREENSHOT PRODUK ASLI.'
+    : 'NOTE: VISUALS ABOVE ARE INTERACTIVE CONCEPT PREVIEWS, NOT FINAL PRODUCT SCREENSHOTS.',
+  secGhEyebrow: '02 / LIVE REPOSITORY TELEMETRY',
+  secGhTitle: isId ? 'Aktivitas & Sinkronisasi GitHub' : 'GitHub Activity & Sync',
+  secGhLead: isId
+    ? 'Data diambil otomatis saat build dari profil GitHub Snowsant1999 (F6 PRD).'
+    : 'Automatically synced at build time from the Snowsant1999 GitHub profile (PRD F6).',
+  sec2Eyebrow: '03 / ABOUT',
+  sec2Title: isId ? 'Tentang saya' : 'About me',
+  sec2Lead: isId
+    ? 'Belajar dengan membangun, bereksperimen, dan terus mengembangkan kemampuan.'
+    : 'Learning by building, experimenting, and continuously expanding engineering skills.',
+  aboutP1: isId
+    ? 'Saya adalah developer yang tertarik pada proses merancang dan membangun solusi digital. Portofolio ini merangkum eksplorasi saya di beberapa bidang pengembangan perangkat lunak melalui repositori GitHub.'
+    : 'I am a software developer focused on designing and building practical digital systems. This portfolio summarizes my exploration across software engineering domains through public GitHub repositories.',
+  aboutP2: isId
+    ? 'Mulai dari aplikasi web dan desktop hingga AI, blockchain, dan cloud computing, setiap proyek menjadi ruang untuk memahami teknologi sekaligus melatih pemecahan masalah.'
+    : 'From web and desktop applications to AI, blockchain, and cloud computing, every project serves as a hands-on space to understand architecture and solve concrete problems.',
+  exploreGithub: isId ? 'Jelajahi GitHub saya' : 'Explore my GitHub',
+  skillHead: 'Tech stack',
+  skillSub: isId ? 'KLIK UNTUK FILTER PROYEK' : 'CLICK TO FILTER PROJECTS',
+  sec3Eyebrow: '04 / GET IN TOUCH',
+  sec3TitleBefore: isId ? 'Mari mulai' : 'Let us start a',
+  sec3TitleAccent: isId ? 'percakapan.' : 'conversation.',
+  contactLead: isId
+    ? 'Punya pertanyaan, ide proyek, atau peluang kolaborasi? Saya terbuka untuk terhubung.'
+    : 'Have a question, project idea, or collaboration opportunity? I am open to connect.',
+  emailNote: isId
+    ? 'EMAIL: BELUM DICANTUMKAN (PLACEHOLDER: snowsant1999@example.com). TAMBAHKAN ALAMAT PUBLIK SEBELUM RILIS.'
+    : 'EMAIL: NOT YET PUBLISHED (PLACEHOLDER: snowsant1999@example.com). ADD PUBLIC ADDRESS BEFORE RELEASE.',
+  copyEmailBtn: isId ? 'Salin Email Placeholder' : 'Copy Placeholder Email',
+  formTitle: isId ? 'Kirim pesan' : 'Send a message',
+  formName: isId ? 'Nama' : 'Name',
+  formNamePh: isId ? 'Nama kamu' : 'Your name',
+  formEmail: 'Email',
+  formEmailPh: isId ? 'nama@email.com' : 'email@example.com',
+  formMsg: isId ? 'Pesan' : 'Message',
+  formMsgPh: isId
+    ? 'Ceritakan apa yang ingin kamu diskusikan...'
+    : 'Tell me what you would like to discuss...',
+  formSubmit: isId ? 'Kirim pesan' : 'Send message',
+  formDefaultNotice: isId
+    ? 'Formulir ini terhubung ke endpoint Web3Forms (mode demonstrasi hingga kunci akses publik diisi).'
+    : 'This form is wired to Web3Forms (running in demo simulation mode until a public access key is configured).',
+};
+const wl = {
+  kicker: isId ? 'SEMAKIN ANEH DAN AJAIB · 2026' : 'CURIOUSER AND CURIOUSER · 2026',
+  h1Before: isId ? 'Ikuti kode masuk ke ' : 'Follow the code down the ',
+  h1Accent: isId ? 'lubang kelinci.' : 'rabbit hole.',
+  heroLead: isId
+    ? 'Enam repositori, lima dunia, satu developer yang penasaran. Jangan terlambat seperti Kelinci Putih: kontak cukup satu klik dari sini.'
+    : 'Six repositories, five realms, one curious developer. Do not be late like the White Rabbit: contact is one click away.',
+  sec1Title: isId ? 'Enam hal mustahil sebelum sarapan' : 'Six impossible things before breakfast',
+  secGhTitle: isId ? 'Catatan dari pesta teh gila' : 'Notes from the mad tea party',
+  sec2Title: isId ? 'Siapa kamu? Pertanyaan bagus.' : 'Who are you? A fair question.',
+  sec3TitleBefore: isId ? 'Kirim kabar lewat' : 'Send word through the',
+  sec3TitleAccent: isId ? 'cermin ajaib.' : 'looking glass.',
+};
+
+const cardSuits = ['\u2660', '\u2665', '\u2666', '\u2663'];
+const cardRanks = ['A', '2', '3', '4', '5', '6'];
+---
+
+<div class="wrap">
+  <section class="hero">
+    <div>
+      <div class="kicker">
+        <span class="t-normal">{copy.kicker}</span>
+        <span class="t-wl">{wl.kicker}</span>
+      </div>
+      <h1 class="font-display">
+        <span class="t-normal">{copy.h1Before}<span class="h1-accent">{copy.h1Accent}</span></span>
+        <span class="t-wl">{wl.h1Before}<span class="h1-accent">{wl.h1Accent}</span></span>
+      </h1>
+      <p class="hero-lead">
+        <span class="t-normal">{copy.heroLead}</span>
+        <span class="t-wl">{wl.heroLead}</span>
+      </p>
+      <div class="actions">
+        <a class="btn primary" href="#projects">
+          <span>{copy.ctaProjects}</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+        <a class="btn secondary" href="#contact">
+          <span>{copy.ctaContact}</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+        <a class="btn ghost font-mono-code" href={withBase('/cv/Snowsant1999-CV-Placeholder.txt')} download>
+          <span>{copy.ctaCv}</span>
+        </a>
+      </div>
+      <div class="hero-meta">
+        <div>
+          <strong>06</strong>
+          <span>{copy.metaRepos}</span>
+        </div>
+        <div>
+          <strong>05</strong>
+          <span>{copy.metaAreas}</span>
+        </div>
+        <div>
+          <strong>0{gh.publicReposCount}</strong>
+          <span>{copy.metaGithub}</span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="profilecard" aria-label={isId ? 'Kartu profil Snowsant1999' : 'Snowsant1999 profile card'}>
+      <div class="cardtop">
+        <div class="identity">
+          <div class="avatar" aria-hidden="true">S</div>
+          <div>
+            <strong>Snowsant1999</strong>
+            <small>{copy.profileSub}</small>
+          </div>
+        </div>
+        <span
+          class="status"
+          data-status-badge
+          data-default-text={copy.statusLabel}
+          data-wonderland-text="IN WONDERLAND ♠"
+          title={isId ? 'Sedang aktif membangun repositori' : 'Actively building repositories'}
+        >
+          {copy.statusLabel}
+        </span>
+      </div>
+
+      <div class="profilebody">
+        <div class="profile-tabs" role="tablist" aria-label={isId ? 'Tampilan kartu profil' : 'Profile card view'}>
+          <button
+            type="button"
+            role="tab"
+            id="tab-btn-readme"
+            aria-selected="true"
+            aria-controls="tab-panel-readme"
+            class="profile-tab active font-mono-code"
+            data-profile-tab="readme"
+          >
+            {copy.tabReadme}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="tab-btn-crystal"
+            aria-selected="false"
+            aria-controls="tab-panel-crystal"
+            class="profile-tab font-mono-code"
+            data-profile-tab="crystal"
+          >
+            {copy.tabCrystal}
+          </button>
+        </div>
+
+        <div id="tab-panel-readme" role="tabpanel" aria-labelledby="tab-btn-readme">
+          <pre class="codebox t-normal"><code><span class="code-kw">const</span> profile = &#123;
+  name: <em>"Snowsant1999"</em>,
+  interests: [
+    <em>"Web Development"</em>,
+    <em>"Artificial Intelligence"</em>,
+    <em>"Desktop Apps"</em>,
+    <em>"Blockchain &amp; Cloud"</em>
+  ],
+  mindset: <em>"learn by building"</em>
+&#125;</code></pre>
+          <pre class="codebox t-wl"><code><span class="code-kw">const</span> wonderland = &#123;
+  rabbitHole: <em>"six repositories deep"</em>,
+  teaTime: <em>"always six o'clock"</em>,
+  rule: <em>"curiouser and curiouser"</em>
+&#125;</code></pre>
+        </div>
+
+        <div id="tab-panel-crystal" role="tabpanel" aria-labelledby="tab-btn-crystal" hidden>
+          <div class="crystal-panel">
+            <button
+              type="button"
+              class="crystal-poke"
+              data-fx-poke
+              aria-label={isId
+                ? 'Putar kristal dan lepaskan serpihan salju (kartu remi di tema Wonderland)'
+                : 'Spin the crystal and release snowflakes (playing cards in Wonderland)'}
+            >
+              <span class="crystal-spin">
+                <Crystal name="Snowsant1999" language="Python" size={168} />
+              </span>
+            </button>
+            <p class="font-mono-code crystal-note">
+              seed: "Snowsant1999" · 6-fold SVG
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="profilefoot">
+        <span class="mono">GITHUB / PROFILE</span>
+        <a href="https://github.com/Snowsant1999" target="_blank" rel="noopener noreferrer" class="profile-gh-link">
+          {copy.viewGithub}
+        </a>
+      </div>
+    </aside>
+  </section>
+
+  <section class="section" id="projects" data-reveal>
+    <div class="sectionhead">
+      <div>
+        <div class="eyebrow">{copy.sec1Eyebrow}</div>
+        <h2 class="font-display">
+          <span class="t-normal">{copy.sec1Title}</span>
+          <span class="t-wl">{wl.sec1Title}</span>
+        </h2>
+      </div>
+      <p class="sectionlead">{copy.sec1Lead}</p>
+    </div>
+
+    <div class="filters" role="group" aria-label={isId ? 'Filter kategori proyek' : 'Filter project category'}>
+      <button type="button" class="filter active" data-filter="all" aria-pressed="true">
+        {copy.filterAll} <span>06</span>
+      </button>
+      <button type="button" class="filter" data-filter="web" aria-pressed="false">
+        Web <span>02</span>
+      </button>
+      <button type="button" class="filter" data-filter="ai" aria-pressed="false">
+        AI <span>01</span>
+      </button>
+      <button type="button" class="filter" data-filter="desktop" aria-pressed="false">
+        Desktop <span>01</span>
+      </button>
+      <button type="button" class="filter" data-filter="cloud" aria-pressed="false">
+        Cloud <span>01</span>
+      </button>
+      <button type="button" class="filter" data-filter="blockchain" aria-pressed="false">
+        Blockchain <span>01</span>
+      </button>
+    </div>
+    <p id="filter-live-status" class="sr-only" role="status" aria-live="polite"></p>
+
+    <div class="projects">
+      {projects.map((entry) => {
+        const p = entry.data;
+        const detailHref = withBase(`${projectBase}${p.slug}`);
+        const numStr = `0${p.order} / 06`;
+        const cardCode = `${cardRanks[p.order - 1]}${cardSuits[(p.order - 1) % 4]}`;
+        const liveRepo = gh.repos[p.repoName];
+        const stars = liveRepo?.stargazersCount ?? 0;
+
+        return (
+          <article class="project" data-category={p.category} data-reveal style={`--i:${p.order - 1}`}>
+            {p.slug === 'alice-ai' && (
+              <div class="projectvisual ai">
+                <div class="visualbar">
+                  <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                  <span class="visual-filename">alice_ai.py · scripted demo</span>
+                </div>
+                <div class="chatui" id="alice-chat-log" aria-live="polite">
+                  <div class="bubble user" id="alice-user-msg">Hi, Alice!</div>
+                  <div class="bubble bot" id="alice-bot-reply">
+                    {isId
+                      ? 'Halo! Klik topik atau ketik pertanyaan tentang proyek Snowsant1999.'
+                      : 'Hello! Click a prompt or type a question about Snowsant1999 projects.'}
+                  </div>
+                </div>
+                <div class="chat-prompts" role="group" aria-label={isId ? 'Pertanyaan cepat Alice' : 'Alice quick prompts'}>
+                  {aliceIntents.slice(0, 3).map((intent) => (
+                    <button
+                      type="button"
+                      class="chat-chip"
+                      data-alice-chip={intent.chip[locale]}
+                      data-alice-ask={intent.answer[locale]}
+                    >
+                      {intent.chip[locale]}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    class="chat-chip wonderland-chip"
+                    data-wonderland-toggle
+                    aria-pressed="false"
+                  >
+                    {isId ? '♠ Lubang Kelinci (On/Off)' : '♠ Rabbit Hole (On/Off)'}
+                  </button>
+                </div>
+                <form class="alice-inline-form" id="alice-inline-form">
+                  <label for="alice-inline-input" class="sr-only">
+                    {isId ? 'Tanya Alice' : 'Ask Alice'}
+                  </label>
+                  <input
+                    id="alice-inline-input"
+                    type="text"
+                    placeholder={isId ? 'Tanya stack, POS, Laravel...' : 'Ask about stack, POS, Laravel...'}
+                    autocomplete="off"
+                  />
+                  <button type="submit" class="alice-send-btn font-mono-code">
+                    {isId ? 'Tanya' : 'Ask'}
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {p.slug === 'website-keluhan-siswa' && (
+              <div class="projectvisual web">
+                <div class="browser">
+                  <div class="browserbar">
+                    <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                    <span class="visual-filename">student-complaint.app</span>
+                  </div>
+                  <div class="webmock">
+                    <div class="mocknav">Portal Keluhan Siswa</div>
+                    <div class="mocktitle">
+                      Sampaikan aspirasi<br /><b>lebih mudah.</b>
+                    </div>
+                    <div class="mockline"></div>
+                    <span class="mockbutton">Buat pengaduan</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {p.slug === 'my-restaurant' && (
+              <div class="projectvisual restaurant">
+                <div class="restmock">
+                  <div class="restlabel">MY RESTAURANT</div>
+                  <div class="resttitle">
+                    Good food.<br />Good moments.
+                  </div>
+                  <div class="restdish" aria-hidden="true"></div>
+                  <div class="restline">EXPLORE OUR MENU</div>
+                </div>
+              </div>
+            )}
+
+            {p.slug === 'pos-amplang' && (
+              <div class="projectvisual pos">
+                <div class="poswindow">
+                  <div class="poshead">
+                    POS AMPLANG <span aria-hidden="true">● ● ●</span>
+                  </div>
+                  <div class="posbody">
+                    <div class="posmenu" aria-hidden="true">
+                      <i></i><i></i><i></i><i></i>
+                    </div>
+                    <div class="posreceipt">
+                      <b>Ringkasan transaksi</b>
+                      <hr />
+                      <span>Amplang Original</span>
+                      <strong>Rp 25.000</strong>
+                      <span>Amplang Pedas</span>
+                      <strong>Rp 30.000</strong>
+                      <hr />
+                      <b>Total Rp 55.000</b>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {p.slug === 'cc-roadmap' && (
+              <div class="projectvisual cloud">
+                <div class="cloudcard">
+                  <div class="mono">CLOUD COMPUTING</div>
+                  <div class="cloudnodes">
+                    <span>DEV</span>
+                    <b aria-hidden="true">→</b>
+                    <span>BUILD</span>
+                    <b aria-hidden="true">→</b>
+                    <span>DEPLOY</span>
+                  </div>
+                  <div class="cloudbase">CC / ROADMAP</div>
+                </div>
+              </div>
+            )}
+
+            {p.slug === 'praktikum-blockchain' && (
+              <div class="projectvisual chain">
+                <div class="chainvisual">
+                  <div class="chaincube" aria-hidden="true">◇</div>
+                  <div class="chainlines">
+                    <span>SMART CONTRACT</span>
+                    <span>TRANSACTION</span>
+                    <span>BLOCK / 001</span>
+                  </div>
+                  <div class="chainstamp">SOLIDITY</div>
+                </div>
+              </div>
+            )}
+
+            <div class="projectinfo">
+              <div class="projectmeta">
+                <span class="eyebrow">
+                  {p.categoryLabel} {stars > 0 ? `· ★ ${stars}` : ''}
+                </span>
+                <span class="mono t-normal">{numStr}</span>
+                <span class="mono card-code t-wl">{cardCode}</span>
+              </div>
+
+              <div class="project-title-row">
+                <h3 transition:name={`title-${p.slug}`}>
+                  <a href={detailHref} class="card-title-link">{p.title}</a>
+                </h3>
+                <div transition:name={`crystal-${p.slug}`} class="mini-crystal">
+                  <Crystal name={p.repoName} language={p.primaryLanguage} size={28} />
+                </div>
+              </div>
+
+              <p>{p.summary[locale]}</p>
+
+              <div class="tags">
+                {p.stack.slice(0, 3).map((tag) => (
+                  <span>{tag}</span>
+                ))}
+              </div>
+
+              <div class="card-footer-links">
+                <a class="repo-detail-link" href={detailHref}>
+                  <span>{copy.openDetail}</span>
+                  <b aria-hidden="true">→</b>
+                </a>
+                <a class="repo" href={p.repoUrl} target="_blank" rel="noopener noreferrer">
+                  <span>{copy.openRepo}</span>
+                  <b aria-hidden="true">↗</b>
+                </a>
+              </div>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <p class="projectnote mono">{copy.visualNote}</p>
+  </section>
+
+  <!-- I5: Live GitHub Telemetry & Recent Repository Updates -->
+  <section class="section" id="github-activity" data-reveal>
+    <div class="sectionhead">
+      <div>
+        <div class="eyebrow">{copy.secGhEyebrow}</div>
+        <h2 class="font-display">
+          <span class="t-normal">{copy.secGhTitle}</span>
+          <span class="t-wl">{wl.secGhTitle}</span>
+        </h2>
+      </div>
+      <p class="sectionlead">{copy.secGhLead}</p>
+    </div>
+
+    <div class="gh-telemetry-grid">
+      <div class="gh-summary-card">
+        <div class="gh-stat-row">
+          <div>
+            <span class="mono">{isId ? 'REPOSITORI PUBLIK' : 'PUBLIC REPOS'}</span>
+            <strong class="font-display">{gh.publicReposCount}</strong>
+          </div>
+          <div>
+            <span class="mono">{isId ? 'PENGIKUT' : 'FOLLOWERS'}</span>
+            <strong class="font-display">{gh.followersCount}</strong>
+          </div>
+          <div>
+            <span class="mono">{isId ? 'BINTANG' : 'TOTAL STARS'}</span>
+            <strong class="font-display">{gh.totalStars}</strong>
+          </div>
+        </div>
+        <p class="gh-sync-note font-mono-code">
+          source: {gh.source} · snapshot: {gh.fetchedAt.slice(0, 10)}
+        </p>
+      </div>
+
+      <div class="gh-commits-card">
+        <div class="skillhead">
+          <strong>{isId ? 'Pembaruan Repositori Terakhir' : 'Latest Repository Updates'}</strong>
+          <span class="mono">GITHUB REST API</span>
+        </div>
+        <ul class="commit-list">
+          {gh.recentCommits.slice(0, 3).map((c) => (
+            <li>
+              <a href={c.url} target="_blank" rel="noopener noreferrer" class="commit-row">
+                <span class="commit-repo font-mono-code">{c.repoName}</span>
+                <span class="commit-msg">{c.message}</span>
+                <span class="commit-date font-mono-code">{c.date}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about" data-reveal>
+    <div class="sectionhead">
+      <div>
+        <div class="eyebrow">{copy.sec2Eyebrow}</div>
+        <h2 class="font-display">
+          <span class="t-normal">{copy.sec2Title}</span>
+          <span class="t-wl">{wl.sec2Title}</span>
+        </h2>
+      </div>
+      <p class="sectionlead">{copy.sec2Lead}</p>
+    </div>
+
+    <div class="aboutgrid">
+      <div class="aboutcopy">
+        <p>{copy.aboutP1}</p>
+        <p>{copy.aboutP2}</p>
+        <a class="textlink" href="https://github.com/Snowsant1999" target="_blank" rel="noopener noreferrer">
+          <span>{copy.exploreGithub}</span>
+          <b aria-hidden="true">↗</b>
+        </a>
+      </div>
+
+      <div class="skillpanel" id="stack">
+        <div class="skillhead">
+          <strong>{copy.skillHead}</strong>
+          <span class="mono">{copy.skillSub}</span>
+        </div>
+
+        <button type="button" class="skillrow" data-skill-jump="web">
+          <span class="skilldot">P</span>
+          <span class="skillrow-text">
+            <b>PHP · Laravel 11</b>
+            <small>Web development (2 repos)</small>
+          </span>
+          <span class="skilltag">WEB</span>
+        </button>
+
+        <button type="button" class="skillrow" data-skill-jump="desktop">
+          <span class="skilldot">J</span>
+          <span class="skillrow-text">
+            <b>Java</b>
+            <small>Desktop applications (1 repo)</small>
+          </span>
+          <span class="skilltag">DESKTOP</span>
+        </button>
+
+        <button type="button" class="skillrow" data-skill-jump="ai">
+          <span class="skilldot">Py</span>
+          <span class="skillrow-text">
+            <b>Python</b>
+            <small>Artificial intelligence (1 repo)</small>
+          </span>
+          <span class="skilltag">AI</span>
+        </button>
+
+        <button type="button" class="skillrow" data-skill-jump="cloud">
+          <span class="skilldot">JS</span>
+          <span class="skillrow-text">
+            <b>JavaScript</b>
+            <small>Cloud computing roadmap (1 repo)</small>
+          </span>
+          <span class="skilltag">CLOUD</span>
+        </button>
+
+        <button type="button" class="skillrow" data-skill-jump="blockchain">
+          <span class="skilldot">S</span>
+          <span class="skillrow-text">
+            <b>Solidity</b>
+            <small>Blockchain smart contracts (1 repo)</small>
+          </span>
+          <span class="skilltag">WEB3</span>
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="contactsection" id="contact" data-reveal>
+  <div class="wrap contactgrid">
+    <div>
+      <div class="eyebrow">{copy.sec3Eyebrow}</div>
+      <h2 class="font-display">
+        <span class="t-normal">{copy.sec3TitleBefore}<br /><span class="accent-text">{copy.sec3TitleAccent}</span></span>
+        <span class="t-wl">{wl.sec3TitleBefore}<br /><span class="accent-text">{wl.sec3TitleAccent}</span></span>
+      </h2>
+      <p class="contactcopy">{copy.contactLead}</p>
+
+      <a class="githubbox" href="https://github.com/Snowsant1999" target="_blank" rel="noopener noreferrer">
+        <span class="ghicon">GH</span>
+        <span class="ghbox-body">
+          <b>GitHub</b>
+          <small>github.com/Snowsant1999</small>
+        </span>
+        <strong aria-hidden="true">↗</strong>
+      </a>
+
+      <div class="email-copy-row">
+        <button type="button" class="btn secondary" data-copy-email="snowsant1999@example.com">
+          <span>{copy.copyEmailBtn}</span>
+        </button>
+        <span id="copy-feedback" class="mono" role="status" aria-live="polite"></span>
+      </div>
+
+      <p class="emailnote mono">{copy.emailNote}</p>
+    </div>
+
+    <form class="contactform" id="contactForm" novalidate>
+      <div class="formtitle">
+        <b>{copy.formTitle}</b>
+        <span class="mono">CONTACT FORM</span>
+      </div>
+
+      <input type="checkbox" name="botcheck" class="sr-only" tabindex="-1" autocomplete="off" />
+
+      <label for="name">{copy.formName}</label>
+      <input id="name" name="name" placeholder={copy.formNamePh} required autocomplete="name" />
+
+      <label for="email">{copy.formEmail}</label>
+      <input id="email" name="email" type="email" placeholder={copy.formEmailPh} required autocomplete="email" />
+
+      <label for="message">{copy.formMsg}</label>
+      <textarea id="message" name="message" placeholder={copy.formMsgPh} required minlength="10"></textarea>
+
+      <button class="btn primary submit" type="submit">
+        <span>{copy.formSubmit}</span>
+        <span aria-hidden="true">↗</span>
+      </button>
+
+      <p class="formnotice" id="formNotice" role="status" aria-live="polite">
+        {copy.formDefaultNotice}
+      </p>
+    </form>
+  </div>
+</section>
+
+<script define:vars={{ aliceIntents, locale }}>
+  window.__ALICE_INTENTS__ = aliceIntents;
+  window.__PORTFOLIO_LOCALE__ = locale;
+</script>
+
+<script>
+  function initPortfolioInteractions() {
+    // 1. Profile Card Tabs (README vs Generative Crystal)
+    const tabBtns = document.querySelectorAll<HTMLButtonElement>('[data-profile-tab]');
+    const readmePanel = document.getElementById('tab-panel-readme');
+    const crystalPanel = document.getElementById('tab-panel-crystal');
+
+    tabBtns.forEach((btn) => {
+      if (btn.dataset.bound === 'true') return;
+      btn.dataset.bound = 'true';
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.profileTab;
+        tabBtns.forEach((b) => {
+          const active = b === btn;
+          b.classList.toggle('active', active);
+          b.setAttribute('aria-selected', String(active));
+        });
+        if (readmePanel && crystalPanel) {
+          readmePanel.hidden = target !== 'readme';
+          crystalPanel.hidden = target !== 'crystal';
+        }
+      });
+    });
+
+    // 2. Category Filters + Tech Stack Row Jump
+    const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter[data-filter]');
+    const cards = document.querySelectorAll<HTMLElement>('.project[data-category]');
+    const liveStatus = document.getElementById('filter-live-status');
+
+    function applyCategoryFilter(category: string) {
+      let visibleCount = 0;
+      filterBtns.forEach((b) => {
+        const active = b.dataset.filter === category;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-pressed', String(active));
+      });
+      cards.forEach((card) => {
+        const show = category === 'all' || card.dataset.category === category;
+        card.hidden = !show;
+        if (show) visibleCount++;
+      });
+      if (liveStatus) {
+        liveStatus.textContent = `${visibleCount} projects shown for category ${category}`;
+      }
+    }
+
+    filterBtns.forEach((btn) => {
+      if (btn.dataset.bound === 'true') return;
+      btn.dataset.bound = 'true';
+      btn.addEventListener('click', () => {
+        applyCategoryFilter(btn.dataset.filter ?? 'all');
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-skill-jump]').forEach((rowBtn) => {
+      if (rowBtn.dataset.bound === 'true') return;
+      rowBtn.dataset.bound = 'true';
+      rowBtn.addEventListener('click', () => {
+        const cat = (rowBtn.getAttribute('data-skill-jump') ?? 'all').toLowerCase();
+        applyCategoryFilter(cat);
+        document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // 3. Alice_Ai Interactive Scripted Chat (Chips + Free-text Input)
+    const userBubble = document.getElementById('alice-user-msg');
+    const replyBubble = document.getElementById('alice-bot-reply');
+    const aliceForm = document.getElementById('alice-inline-form') as HTMLFormElement | null;
+    const aliceInput = document.getElementById('alice-inline-input') as HTMLInputElement | null;
+
+    document.querySelectorAll<HTMLButtonElement>('[data-alice-ask]').forEach((chip) => {
+      if (chip.dataset.bound === 'true') return;
+      chip.dataset.bound = 'true';
+      chip.addEventListener('click', () => {
+        if (userBubble && chip.dataset.aliceChip) {
+          userBubble.textContent = chip.dataset.aliceChip;
+        }
+        if (replyBubble) {
+          replyBubble.textContent = chip.dataset.aliceAsk ?? '';
+        }
+      });
+    });
+
+    if (aliceForm && aliceInput && aliceForm.dataset.bound !== 'true') {
+      aliceForm.dataset.bound = 'true';
+      aliceForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const q = aliceInput.value.trim();
+        if (!q) return;
+        if (userBubble) userBubble.textContent = q;
+
+        const intents = (window as unknown as {
+          __ALICE_INTENTS__?: Array<{
+            keys: string[];
+            answer: { en: string; id: string };
+          }>;
+          __PORTFOLIO_LOCALE__?: 'en' | 'id';
+        }).__ALICE_INTENTS__ ?? [];
+        const loc = (window as unknown as { __PORTFOLIO_LOCALE__?: 'en' | 'id' }).__PORTFOLIO_LOCALE__ ?? 'en';
+        const lower = q.toLowerCase();
+
+        if (lower.includes('wonderland') || lower.includes('rabbit') || lower.includes('kelinci') || lower.includes('tea party')) {
+          const wlBtn = document.querySelector<HTMLElement>('[data-wonderland-toggle]');
+          wlBtn?.click();
+          const isNowWl = document.documentElement.dataset.wonderland === 'on';
+          if (replyBubble) {
+            replyBubble.textContent =
+              loc === 'id'
+                ? isNowWl
+                  ? 'Selamat datang di Negeri Ajaib! Tema Alice in Wonderland sekarang AKTIF. Ketik "wonderland" lagi atau klik tombol ♠ untuk kembali.'
+                  : 'Kembali dari Negeri Ajaib ke tema Snowfield Alice Blue.'
+                : isNowWl
+                  ? 'Welcome down the Rabbit Hole! Alice in Wonderland theme is now ON. Type "wonderland" again or click the ♠ button to toggle it OFF.'
+                  : 'Returned from Wonderland back to the Alice Blue Snowfield theme.';
+          }
+          aliceInput.value = '';
+          return;
+        }
+
+        const found = intents.find((item) =>
+          item.keys.some((k) => lower.includes(k))
+        );
+
+        if (replyBubble) {
+          replyBubble.textContent = found
+            ? found.answer[loc]
+            : loc === 'id'
+              ? 'Ini pratinjau berskrip. Coba tanya tentang "stack", "pos", "laravel", atau "kontak".'
+              : 'This is a scripted preview. Try asking about "stack", "pos", "laravel", or "contact".';
+        }
+        aliceInput.value = '';
+      });
+    }
+
+    // 4. Copy Email Button
+    const copyBtn = document.querySelector<HTMLButtonElement>('[data-copy-email]');
+    const copyFeedback = document.getElementById('copy-feedback');
+    if (copyBtn && copyBtn.dataset.bound !== 'true') {
+      copyBtn.dataset.bound = 'true';
+      copyBtn.addEventListener('click', async () => {
+        const email = copyBtn.dataset.copyEmail ?? '';
+        try {
+          await navigator.clipboard.writeText(email);
+          if (copyFeedback) copyFeedback.textContent = 'Copied!';
+          setTimeout(() => {
+            if (copyFeedback) copyFeedback.textContent = '';
+          }, 2200);
+        } catch {
+          if (copyFeedback) copyFeedback.textContent = email;
+        }
+      });
+    }
+
+    // 5. Contact Form Validation & Feedback
+    const form = document.getElementById('contactForm') as HTMLFormElement | null;
+    const notice = document.getElementById('formNotice');
+    if (form && form.dataset.bound !== 'true') {
+      form.dataset.bound = 'true';
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = new FormData(form);
+        const name = String(data.get('name') ?? '').trim();
+        const email = String(data.get('email') ?? '').trim();
+        const message = String(data.get('message') ?? '').trim();
+
+        if (!name || !email.includes('@') || message.length < 10) {
+          if (notice) {
+            notice.textContent =
+              document.documentElement.lang === 'id'
+                ? 'Mohon isi nama, email yang valid, dan pesan minimal 10 karakter.'
+                : 'Please enter your name, a valid email address, and a message of at least 10 characters.';
+          }
+          return;
+        }
+
+        if (notice) {
+          notice.textContent =
+            document.documentElement.lang === 'id'
+              ? `Terima kasih, ${name}! Simulasi antarmuka berhasil; tambahkan PUBLIC_WEB3FORMS_KEY di Secrets GitHub untuk pengiriman langsung.`
+              : `Thank you, ${name}! Interface validation passed; add PUBLIC_WEB3FORMS_KEY in GitHub Secrets to enable live email delivery.`;
+        }
+        form.reset();
+      });
+    }
+  }
+
+  function syncStatusBadge() {
+    const badge = document.querySelector<HTMLElement>('[data-status-badge]');
+    if (!badge) return;
+    const isWl = document.documentElement.dataset.wonderland === 'on';
+    badge.textContent = isWl
+      ? badge.dataset.wonderlandText ?? 'IN WONDERLAND ♠'
+      : badge.dataset.defaultText ?? 'BUILDING';
+  }
+
+  initPortfolioInteractions();
+  syncStatusBadge();
+  document.addEventListener('astro:page-load', () => {
+    initPortfolioInteractions();
+    syncStatusBadge();
+  });
+  window.addEventListener('wonderland:change', syncStatusBadge);
+</script>
+
+<style>
+  .mono {
+    font: 500 0.75rem/1.5 var(--font-mono);
+    letter-spacing: 0.01em;
+    color: var(--text-muted);
+  }
+
+  .hero {
+    padding: 56px 0 60px;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .kicker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .kicker::before {
+    content: '';
+    width: 26px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-size: clamp(2.25rem, 4.8vw, 3.625rem);
+    line-height: 1.12;
+    letter-spacing: -0.04em;
+    font-weight: 700;
+    margin: 18px 0 16px;
+    max-width: 620px;
+  }
+
+  .hero h1 .h1-accent {
+    color: var(--accent);
+  }
+
+  .hero-lead {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    max-width: 550px;
+    margin: 0;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .btn {
+    min-height: 46px;
+    padding: 0 18px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .primary {
+    background: var(--accent);
+    color: var(--accent-text);
+    border: 1px solid var(--accent);
+    box-shadow: var(--shadow);
+  }
+
+  .secondary {
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    background: transparent;
+  }
+
+  .ghost {
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 32px;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+  }
+
+  .hero-meta strong {
+    display: block;
+    color: var(--text);
+    font-size: 1.125rem;
+  }
+
+  .profilecard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .cardtop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--surface-tint);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 1.125rem;
+  }
+
+  .identity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .identity strong {
+    display: block;
+    font-size: 0.875rem;
+  }
+
+  .identity small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  .status {
+    font: 600 0.75rem var(--font-mono);
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .status::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .profilebody {
+    padding: 16px 0;
+  }
+
+  .profile-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .profile-tab {
+    min-height: 36px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  .profile-tab.active {
+    background: var(--accent);
+    color: var(--accent-text);
+    border-color: var(--accent);
+  }
+
+  .codebox {
+    background: #0B1F33;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    color: #F0F8FF;
+    font: 500 0.75rem/1.85 var(--font-mono);
+    margin: 0;
+    overflow-x: auto;
+  }
+
+  .code-kw {
+    color: #A9C3DC;
+  }
+
+  .codebox em {
+    color: #8EC5FF;
+    font-style: normal;
+  }
+
+  .crystal-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border-radius: 8px;
+    background: var(--surface-tint);
+    color: var(--accent);
+  }
+
+  .crystal-note {
+    margin: 8px 0 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .profilefoot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+    font-size: 0.75rem;
+  }
+
+  .profile-gh-link {
+    color: var(--accent);
+    font-weight: 700;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .section {
+    padding: 64px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .sectionhead {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+
+  .eyebrow {
+    color: var(--accent);
+    font: 600 0.75rem var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .section h2 {
+    font-size: clamp(1.75rem, 3vw, 2rem);
+    line-height: 1.25;
+    letter-spacing: -0.03em;
+    margin: 8px 0 0;
+  }
+
+  .sectionlead {
+    max-width: 380px;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 0 0 24px;
+  }
+
+  .filter {
+    min-height: 44px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text-muted);
+    border-radius: 999px;
+    padding: 0 16px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    transition: background-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);
+  }
+
+  .filter.active,
+  .filter:hover {
+    background: var(--accent);
+    color: var(--accent-text);
+    border-color: var(--accent);
+  }
+
+  .filter span {
+    opacity: 0.85;
+    margin-left: 5px;
+  }
+
+  .projects {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .project {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .projectvisual {
+    min-height: 210px;
+    padding: 14px;
+    background: var(--surface-tint);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .projectinfo {
+    padding: 18px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .projectmeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .project-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 8px 0 6px;
+  }
+
+  .project h3 {
+    font-size: 1.125rem;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  .card-title-link {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .card-title-link:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  .mini-crystal {
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .project p {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0;
+    min-height: 56px;
+  }
+
+  .tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 14px 0 16px;
+  }
+
+  .tags span {
+    font: 500 0.75rem var(--font-mono);
+    color: var(--accent);
+    background: var(--surface-tint);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+
+  .card-footer-links {
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .repo-detail-link,
+  .repo {
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    text-decoration: none;
+  }
+
+  .repo-detail-link:hover,
+  .repo:hover {
+    text-decoration: underline;
+  }
+
+  .projectnote {
+    margin-top: 18px;
+  }
+
+  /* Card 01: Alice_Ai visual */
+  .visualbar,
+  .browserbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 6px 10px;
+  }
+
+  .dots i {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--border-strong);
+    border-radius: 50%;
+    margin-right: 4px;
+  }
+
+  .visual-filename {
+    font: 500 0.6875rem var(--font-mono);
+    color: var(--text-muted);
+  }
+
+  .chatui {
+    padding: 6px 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .bubble {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    padding: 6px 10px;
+    border-radius: 7px;
+    max-width: 95%;
+  }
+
+  .bubble.user {
+    background: var(--surface);
+    color: var(--text);
+    margin-left: auto;
+    border: 1px solid var(--border);
+  }
+
+  .bubble.bot {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+  }
+
+  .chat-prompts {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+
+  .chat-chip {
+    min-height: 28px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    font: 600 0.6875rem var(--font-mono);
+  }
+
+  .chat-chip:hover,
+  .chat-chip.wonderland-active {
+    background: var(--accent);
+    color: var(--accent-text);
+  }
+
+  .alice-inline-form {
+    display: flex;
+    gap: 6px;
+  }
+
+  .alice-inline-form input {
+    flex: 1;
+    min-width: 0;
+    height: 32px;
+    padding: 0 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 0.75rem;
+  }
+
+  .alice-send-btn {
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: var(--accent-text);
+    font-size: 0.6875rem;
+    font-weight: 700;
+  }
+
+  /* Card 02: Web browser visual */
+  .browser {
+    width: 100%;
+    height: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .webmock {
+    padding: 14px 16px;
+  }
+
+  .mocknav {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .mocktitle {
+    font-size: 1.125rem;
+    line-height: 1.2;
+    font-weight: 700;
+    margin-top: 8px;
+    color: var(--text);
+  }
+
+  .mocktitle b {
+    color: var(--accent);
+  }
+
+  .mockline {
+    height: 4px;
+    width: 84px;
+    background: var(--border);
+    margin: 10px 0;
+  }
+
+  .mockbutton {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--accent-text);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  /* Card 03: Restaurant visual */
+  .restmock {
+    width: 100%;
+    height: 100%;
+    min-height: 180px;
+    background: #12304D;
+    color: #F0F8FF;
+    padding: 16px;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .restlabel {
+    font: 600 0.6875rem var(--font-mono);
+    letter-spacing: 0.12em;
+    color: #8EC5FF;
+  }
+
+  .resttitle {
+    font-size: 1.35rem;
+    line-height: 1.15;
+    font-weight: 700;
+    margin-top: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .restdish {
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    border: 12px solid #8EC5FF;
+    border-radius: 50%;
+    right: 14px;
+    bottom: -32px;
+    box-shadow: inset 0 0 0 7px #315F85;
+  }
+
+  .restline {
+    font: 600 0.6875rem var(--font-mono);
+    margin-top: 18px;
+    color: #A9C3DC;
+  }
+
+  /* Card 04: POS Desktop visual */
+  .poswindow {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .poshead {
+    background: #12304D;
+    color: #F0F8FF;
+    padding: 8px 12px;
+    font: 600 0.6875rem var(--font-mono);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .poshead span {
+    color: #8EC5FF;
+  }
+
+  .posbody {
+    display: flex;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .posmenu {
+    width: 44%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .posmenu i {
+    height: 36px;
+    border-radius: 4px;
+    background: var(--surface-tint);
+    border: 1px solid var(--border);
+  }
+
+  .posreceipt {
+    flex: 1;
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+  }
+
+  .posreceipt b,
+  .posreceipt strong {
+    color: var(--text);
+    display: block;
+  }
+
+  .posreceipt span {
+    display: block;
+    margin-top: 3px;
+  }
+
+  .posreceipt hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 5px 0;
+  }
+
+  /* Card 05: Cloud visual */
+  .cloudcard {
+    width: 100%;
+    height: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .cloudnodes {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 18px 0;
+  }
+
+  .cloudnodes span {
+    background: var(--surface-tint);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    padding: 6px 8px;
+    border-radius: 5px;
+    font: 600 0.6875rem var(--font-mono);
+  }
+
+  .cloudnodes b {
+    color: var(--text-muted);
+  }
+
+  .cloudbase {
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    font: 600 0.6875rem var(--font-mono);
+    color: var(--text-muted);
+  }
+
+  /* Card 06: Blockchain visual */
+  .chainvisual {
+    width: 100%;
+    height: 100%;
+    min-height: 180px;
+    background: #0B1F33;
+    color: #8EC5FF;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+    position: relative;
+  }
+
+  .chaincube {
+    font-size: 3rem;
+    color: #8EC5FF;
+  }
+
+  .chainlines {
+    display: grid;
+    gap: 8px;
+    font: 600 0.6875rem var(--font-mono);
+    color: #F0F8FF;
+  }
+
+  .chainlines span {
+    border-bottom: 1px solid #25507A;
+    padding-bottom: 4px;
+  }
+
+  .chainstamp {
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+    font: 600 0.6875rem var(--font-mono);
+    color: #8EC5FF;
+  }
+
+  /* GitHub Telemetry Section */
+  .gh-telemetry-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 24px;
+  }
+
+  .gh-summary-card,
+  .gh-commits-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+  }
+
+  .gh-stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .gh-stat-row strong {
+    display: block;
+    font-size: 1.75rem;
+    color: var(--accent);
+    margin-top: 4px;
+  }
+
+  .gh-sync-note {
+    margin: 14px 0 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .commit-list {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+
+  .commit-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    background: var(--surface-tint);
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .commit-row:hover {
+    border-color: var(--accent);
+  }
+
+  .commit-repo {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .commit-msg {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .commit-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* About & Tech Stack */
+  .aboutgrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  .aboutcopy p {
+    font-size: 0.9375rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+    margin: 0 0 16px;
+    max-width: 480px;
+  }
+
+  .textlink {
+    display: inline-flex;
+    gap: 12px;
+    align-items: center;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.875rem;
+    min-height: 44px;
+  }
+
+  .skillpanel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow);
+  }
+
+  .skillhead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skillhead strong {
+    font-size: 0.9375rem;
+  }
+
+  .skillrow {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 8px;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    text-align: left;
+    border-radius: 8px;
+    transition: background-color var(--dur) var(--ease-out);
+  }
+
+  .skillrow:last-child {
+    border-bottom: 0;
+  }
+
+  .skillrow:hover {
+    background: var(--surface-tint);
+  }
+
+  .skilldot {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    background: var(--surface-tint);
+    color: var(--accent);
+    font: 700 0.75rem var(--font-mono);
+    flex-shrink: 0;
+  }
+
+  .skillrow-text {
+    flex: 1;
+  }
+
+  .skillrow-text b {
+    display: block;
+    font-size: 0.875rem;
+  }
+
+  .skillrow-text small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-top: 2px;
+  }
+
+  .skilltag {
+    font: 600 0.75rem var(--font-mono);
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* Contact Section */
+  .contactsection {
+    background: var(--surface-tint);
+    padding: 68px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .contactgrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+
+  .contactsection h2 {
+    font-size: clamp(2.125rem, 4vw, 2.75rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    margin: 14px 0;
+  }
+
+  .contactsection h2 .accent-text {
+    color: var(--accent);
+  }
+
+  .contactcopy {
+    color: var(--text-muted);
+    max-width: 390px;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .githubbox {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    margin-top: 24px;
+    max-width: 340px;
+    text-decoration: none;
+  }
+
+  .githubbox:hover {
+    border-color: var(--accent);
+  }
+
+  .ghicon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #0B1F33;
+    color: #F0F8FF;
+    display: grid;
+    place-items: center;
+    font: 700 0.75rem var(--font-mono);
+    flex-shrink: 0;
+  }
+
+  .ghbox-body {
+    flex: 1;
+  }
+
+  .ghbox-body b {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text);
+  }
+
+  .ghbox-body small {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .githubbox strong {
+    color: var(--accent);
+  }
+
+  .email-copy-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .emailnote {
+    margin-top: 16px;
+    max-width: 380px;
+  }
+
+  .contactform {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .formtitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .formtitle b {
+    font-size: 1rem;
+  }
+
+  .contactform label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    margin: 12px 0 6px;
+  }
+
+  .contactform input,
+  .contactform textarea {
+    width: 100%;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    background: var(--bg);
+    padding: 10px 12px;
+    color: var(--text);
+    font-size: 0.875rem;
+  }
+
+  .contactform input {
+    height: 44px;
+  }
+
+  .contactform textarea {
+    height: 96px;
+    resize: vertical;
+  }
+
+  .submit {
+    width: 100%;
+    margin-top: 16px;
+    justify-content: space-between;
+  }
+
+  .formnotice {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    margin: 12px 0 0;
+  }
+
+  @media (max-width: 900px) {
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding: 40px 0;
+    }
+
+    .projects {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gh-telemetry-grid,
+    .aboutgrid,
+    .contactgrid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .sectionhead {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .projects {
+      grid-template-columns: 1fr;
+    }
+
+    .commit-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+</style>

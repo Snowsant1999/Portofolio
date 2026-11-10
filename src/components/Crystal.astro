@@ -1,0 +1,38 @@
+---
+import { generateCrystalSvgMarkup } from '../lib/crystal';
+
+interface Props {
+  name: string;
+  language?: string;
+  size?: number;
+  label?: string;
+  class?: string;
+}
+
+const {
+  name,
+  language = 'Python',
+  size = 220,
+  label,
+  class: className = '',
+} = Astro.props;
+
+const innerMarkup = generateCrystalSvgMarkup({ seedName: name, language, size });
+---
+
+<svg
+  viewBox={`0 0 ${size} ${size}`}
+  width={size}
+  height={size}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  class:list={['crystal-svg select-none', className]}
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.85"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  set:html={innerMarkup}
+/>
+

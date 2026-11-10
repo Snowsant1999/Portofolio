@@ -1,0 +1,287 @@
+---
+interface Props {
+  category: 'ai' | 'web' | 'desktop' | 'cloud' | 'blockchain';
+  slug: string;
+}
+
+const { category, slug } = Astro.props;
+---
+
+{category === 'ai' && (
+  <div class="mock-box ai-box">
+    <div class="mock-bar">
+      <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="bar-label">alice_ai.py · Gemini Flash 3.7</span>
+    </div>
+    <div class="chat-preview">
+      <div class="chat-msg user-msg">python alice_ai.py --ask "Explain Solidity events"</div>
+      <div class="chat-msg bot-msg">
+        Events in Solidity emit logs stored on the EVM transaction receipt, allowing front-end apps to listen for state changes efficiently.
+      </div>
+    </div>
+  </div>
+)}
+
+{category === 'web' && slug === 'website-keluhan-siswa' && (
+  <div class="mock-box web-box">
+    <div class="mock-bar">
+      <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="bar-label">student-complaint.app · Laravel 11</span>
+    </div>
+    <div class="portal-preview">
+      <div class="portal-nav">Portal Keluhan Siswa</div>
+      <div class="portal-heading">Sampaikan aspirasi &amp; laporan fasilitas sekolah.</div>
+      <div class="portal-stats">
+        <span>Status: Terverifikasi</span>
+        <span>Kategori: Sarana</span>
+      </div>
+    </div>
+  </div>
+)}
+
+{category === 'web' && slug !== 'website-keluhan-siswa' && (
+  <div class="mock-box rest-box">
+    <div class="rest-kicker">MY RESTAURANT · PHP</div>
+    <div class="rest-heading">Good food. Good moments.</div>
+    <div class="rest-Sub">Digital Menu &amp; Table Ordering</div>
+  </div>
+)}
+
+{category === 'desktop' && (
+  <div class="mock-box pos-box">
+    <div class="pos-top">
+      <span>POS AMPLANG · JAVA DESKTOP</span>
+      <span aria-hidden="true">● ● ●</span>
+    </div>
+    <div class="pos-grid">
+      <div class="pos-items">
+        <span>Amplang Original (x1)</span>
+        <strong>Rp 25.000</strong>
+        <span>Amplang Pedas (x1)</span>
+        <strong>Rp 30.000</strong>
+      </div>
+      <div class="pos-total">
+        <span>TOTAL TRANSAKSI</span>
+        <strong>Rp 55.000</strong>
+      </div>
+    </div>
+  </div>
+)}
+
+{category === 'cloud' && (
+  <div class="mock-box cloud-box">
+    <div class="bar-label">CC_ROADMAP · JAVASCRIPT</div>
+    <div class="cloud-flow">
+      <span>01 DEV</span>
+      <b aria-hidden="true">→</b>
+      <span>02 BUILD</span>
+      <b aria-hidden="true">→</b>
+      <span>03 DEPLOY</span>
+    </div>
+  </div>
+)}
+
+{category === 'blockchain' && (
+  <div class="mock-box chain-box">
+    <div class="chain-icon" aria-hidden="true">◇</div>
+    <div class="chain-meta">
+      <span>CONTRACT: Praktikum.sol</span>
+      <span>COMPILER: Solidity ^0.8.x</span>
+      <span>STATUS: Verified Lab Module</span>
+    </div>
+  </div>
+)}
+
+<style>
+  .mock-box {
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface-tint);
+    padding: 18px;
+  }
+
+  .mock-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 7px 12px;
+    margin-bottom: 14px;
+  }
+
+  .dots i {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--border-strong);
+    margin-right: 4px;
+  }
+
+  .bar-label {
+    font: 600 0.75rem var(--font-mono);
+    color: var(--text-muted);
+  }
+
+  .chat-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .chat-msg {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .user-msg {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+  }
+
+  .bot-msg {
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+  }
+
+  .portal-preview {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .portal-nav {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .portal-heading {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 8px 0 12px;
+  }
+
+  .portal-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font: 500 0.75rem var(--font-mono);
+    color: var(--text-muted);
+  }
+
+  .rest-box {
+    background: #12304D;
+    color: #F0F8FF;
+  }
+
+  .rest-kicker {
+    font: 600 0.75rem var(--font-mono);
+    color: #8EC5FF;
+    letter-spacing: 0.08em;
+  }
+
+  .rest-heading {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 8px 0 4px;
+  }
+
+  .rest-Sub {
+    font-size: 0.875rem;
+    color: #A9C3DC;
+  }
+
+  .pos-top {
+    background: #12304D;
+    color: #F0F8FF;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font: 600 0.75rem var(--font-mono);
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .pos-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 0.875rem;
+  }
+
+  .pos-items span,
+  .pos-items strong {
+    display: block;
+  }
+
+  .pos-total {
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .pos-total span {
+    font: 600 0.6875rem var(--font-mono);
+    color: var(--text-muted);
+  }
+
+  .pos-total strong {
+    font-size: 1.125rem;
+    color: var(--accent);
+  }
+
+  .cloud-flow {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    margin-top: 10px;
+    font: 700 0.8125rem var(--font-mono);
+  }
+
+  .cloud-flow span {
+    background: var(--surface-tint);
+    color: var(--accent);
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  .chain-box {
+    background: #0B1F33;
+    color: #F0F8FF;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .chain-icon {
+    font-size: 2.75rem;
+    color: #8EC5FF;
+  }
+
+  .chain-meta {
+    display: grid;
+    gap: 6px;
+    font: 500 0.75rem var(--font-mono);
+  }
+</style>
+

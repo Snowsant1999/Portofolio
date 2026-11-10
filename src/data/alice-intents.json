@@ -1,0 +1,51 @@
+[
+  {
+    "id": "what-is-alice",
+    "chip": { "en": "What is Alice?", "id": "Apa itu Alice?" },
+    "keys": ["alice", "who", "what", "assistant", "gemini", "python", "ai", "apa"],
+    "answer": {
+      "en": "Alice_Ai is Snowsant1999's personal AI assistant built in Python with Gemini Flash 3.7. It earned 1 star on GitHub and handles prompt automation and coding queries.",
+      "id": "Alice_Ai adalah asisten AI pribadi buatan Snowsant1999 dengan Python dan Gemini Flash 3.7. Proyek ini meraih 1 bintang di GitHub dan menangani otomasi prompt serta tanya-jawab coding."
+    },
+    "slug": "alice-ai"
+  },
+  {
+    "id": "tech-stack",
+    "chip": { "en": "Tech Stack?", "id": "Stack Teknologi?" },
+    "keys": ["stack", "language", "tech", "skill", "bahasa", "keahlian", "php", "laravel", "java", "solidity"],
+    "answer": {
+      "en": "Snowsant1999 builds across 5 areas: PHP & Laravel 11 for web portals, Java for desktop POS software, Python for AI assistants, JavaScript for Cloud roadmaps, and Solidity for smart contracts.",
+      "id": "Snowsant1999 membangun di 5 area: PHP & Laravel 11 untuk web, Java untuk kasir desktop POS, Python untuk asisten AI, JavaScript untuk roadmap Cloud, dan Solidity untuk smart contract."
+    }
+  },
+  {
+    "id": "umkm-pos",
+    "chip": { "en": "POS & Restaurant?", "id": "POS & Restoran?" },
+    "keys": ["pos", "amplang", "restaurant", "restoran", "umkm", "kasir", "client", "klien"],
+    "answer": {
+      "en": "For retail and culinary workflows, check POS_Amplang (a Java desktop cashier app with automatic receipt totals) and MyRestaurant (a PHP digital menu and ordering web app).",
+      "id": "Untuk kebutuhan ritel dan kuliner UMKM, lihat POS_Amplang (aplikasi kasir desktop Java dengan hitung struk otomatis) dan MyRestaurant (aplikasi web menu restoran berbasis PHP)."
+    },
+    "slug": "pos-amplang"
+  },
+  {
+    "id": "laravel-web",
+    "chip": { "en": "Laravel 11 Project?", "id": "Proyek Laravel 11?" },
+    "keys": ["laravel", "keluhan", "siswa", "student", "complaint", "web", "sekolah"],
+    "answer": {
+      "en": "WebsiteKeluhanSiswa is built on Laravel 11. It lets students submit school feedback or complaints and helps staff track resolution statuses.",
+      "id": "WebsiteKeluhanSiswa dibangun dengan Laravel 11. Aplikasi ini memudahkan siswa mengirim pengaduan atau aspirasi dan membantu pihak sekolah melacak status penanganannya."
+    },
+    "slug": "website-keluhan-siswa"
+  },
+  {
+    "id": "contact-hire",
+    "chip": { "en": "How to Contact?", "id": "Cara Menghubungi?" },
+    "keys": ["contact", "email", "hire", "work", "hubungi", "kontak", "kerja", "kolaborasi"],
+    "answer": {
+      "en": "Use the Contact section at the bottom of the page, copy the email address, or visit github.com/Snowsant1999 directly.",
+      "id": "Gunakan bagian Kontak di bawah halaman, salin alamat email, atau kunjungi langsung github.com/Snowsant1999."
+    }
+  }
+]
+

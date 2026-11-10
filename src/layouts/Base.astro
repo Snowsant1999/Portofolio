@@ -1,0 +1,635 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/fraunces';
+import '@fontsource/jetbrains-mono/500.css';
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import { getCollection } from 'astro:content';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import CommandPalette from '../components/islands/CommandPalette';
+import Terminal from '../components/islands/Terminal';
+import type { PaletteItem } from '../scripts/actions';
+import { getDictionary, getAlternateLocalePath, withBase, type Locale } from '../i18n';
+
+interface Props {
+  title?: string;
+  description?: string;
+  locale?: Locale;
+}
+
+const {
+  locale = 'en',
+  title,
+  description,
+} = Astro.props;
+
+const isId = locale === 'id';
+const t = getDictionary(locale);
+const pageTitle = title ? `${title} | Snowsant1999` : t.siteTitle;
+const pageDesc = description ?? t.siteDescription;
+const targetLocale: Locale = locale === 'en' ? 'id' : 'en';
+const alternatePath = getAlternateLocalePath(Astro.url.pathname, targetLocale);
+const homeHref = isId ? withBase('/id/') : withBase('/');
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const projectBase = isId ? '/id/projects/' : '/projects/';
+
+const paletteItems: PaletteItem[] = [
+  ...projects.map((p) => ({
+    id: `proj-${p.data.slug}`,
+    label: `${p.data.title} (${p.data.primaryLanguage})`,
+    group: 'Project',
+    keywords: `${p.data.repoName} ${p.data.stack.join(' ')} ${p.data.category}`,
+    href: withBase(`${projectBase}${p.data.slug}`),
+  })),
+  {
+    id: 'nav-projects',
+    label: isId ? 'Lompat ke Daftar Proyek' : 'Jump to Projects Section',
+    group: 'Section',
+    keywords: 'projects work portfolio karya',
+    href: `${homeHref}#projects`,
+  },
+  {
+    id: 'nav-activity',
+    label: isId ? 'Lompat ke Aktivitas GitHub' : 'Jump to GitHub Activity',
+    group: 'Section',
+    keywords: 'github commits stars activity kontribusi',
+    href: `${homeHref}#github-activity`,
+  },
+  {
+    id: 'nav-about',
+    label: isId ? 'Lompat ke Tentang & Tech Stack' : 'Jump to About & Tech Stack',
+    group: 'Section',
+    keywords: 'about skills stack php java python solidity',
+    href: `${homeHref}#about`,
+  },
+  {
+    id: 'nav-contact',
+    label: isId ? 'Lompat ke Formulir Kontak' : 'Jump to Contact Form',
+    group: 'Section',
+    keywords: 'contact email message hubungi pesan',
+    href: `${homeHref}#contact`,
+  },
+  {
+    id: 'act-cv',
+    label: isId ? 'Unduh CV (PDF/Placeholder)' : 'Download CV (PDF/Placeholder)',
+    group: 'Action',
+    keywords: 'cv resume download unduh',
+    href: withBase('/cv/Snowsant1999-CV-Placeholder.txt'),
+  },
+  {
+    id: 'act-copy-email',
+    label: isId ? 'Salin Alamat Email ke Clipboard' : 'Copy Email Address to Clipboard',
+    group: 'Action',
+    keywords: 'copy email address salin',
+    actionType: 'copy-email',
+  },
+  {
+    id: 'act-theme',
+    label: isId ? 'Ganti Tema Gelap / Terang' : 'Toggle Dark / Light Theme',
+    group: 'Action',
+    keywords: 'theme dark light mode gelap terang',
+    actionType: 'theme',
+  },
+  {
+    id: 'act-lang',
+    label: isId ? 'Ganti Bahasa ke Inggris (EN)' : 'Switch Language to Indonesian (ID)',
+    group: 'Action',
+    keywords: 'language english indonesian bahasa',
+    href: alternatePath,
+  },
+  {
+    id: 'act-wonderland',
+    label: isId
+      ? 'Easter Egg: Toggle Tema Alice in Wonderland (On/Off)'
+      : 'Easter Egg: Toggle Alice in Wonderland Theme (On/Off)',
+    group: 'Easter Egg',
+    keywords: 'alice wonderland rabbit hole queen hearts tea party easter egg theme',
+    actionType: 'wonderland',
+  },
+  {
+    id: 'act-terminal',
+    label: isId ? 'Buka Terminal Interaktif (`)' : 'Open Interactive Terminal (`)',
+    group: 'Easter Egg',
+    keywords: 'terminal shell konami console cli',
+    actionType: 'open-terminal',
+  },
+  {
+    id: 'ext-github',
+    label: 'GitHub Profile (@Snowsant1999) ↗',
+    group: 'External',
+    keywords: 'github profile repositories',
+    href: 'https://github.com/Snowsant1999',
+    external: true,
+  },
+];
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDesc} />
+    <link rel="canonical" href={canonicalUrl.href} />
+    <link rel="alternate" hreflang="en" href={new URL(getAlternateLocalePath(Astro.url.pathname, 'en'), Astro.site).href} />
+    <link rel="alternate" hreflang="id" href={new URL(getAlternateLocalePath(Astro.url.pathname, 'id'), Astro.site).href} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDesc} />
+    <meta property="og:url" content={canonicalUrl.href} />
+    <ClientRouter />
+    <script is:inline>
+      (function () {
+        function applyStoredPreferences() {
+          try {
+            var stored = localStorage.getItem('theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var theme = stored === 'dark' || stored === 'light' ? stored : (prefersDark ? 'dark' : 'light');
+            document.documentElement.dataset.theme = theme;
+
+            var wl = localStorage.getItem('wonderland');
+            if (wl === 'on') {
+              document.documentElement.dataset.wonderland = 'on';
+            } else {
+              delete document.documentElement.dataset.wonderland;
+            }
+          } catch (e) {
+            document.documentElement.dataset.theme = 'light';
+          }
+        }
+        applyStoredPreferences();
+        document.addEventListener('astro:after-swap', applyStoredPreferences);
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">{t.skipToContent}</a>
+
+    <header class="site-header">
+      <div class="wrap nav-inner">
+        <a class="brand font-display" href={homeHref}>
+          Snowsant<span class="brand-year">1999</span>
+        </a>
+
+        <nav class="desktop-nav" aria-label={isId ? 'Navigasi utama' : 'Primary navigation'}>
+          <a href={`${homeHref}#projects`}>{t.nav.projects}</a>
+          <a href={`${homeHref}#github-activity`}>GitHub</a>
+          <a href={`${homeHref}#about`}>{t.nav.about}</a>
+          <a href={`${homeHref}#contact`}>{t.nav.contact}</a>
+        </nav>
+
+        <div class="nav-actions">
+          <button
+            type="button"
+            class="palette-trigger"
+            data-open-palette
+            aria-label={t.nav.search}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+            <span class="palette-label">{isId ? 'Cari' : 'Search'}</span>
+            <kbd class="palette-kbd font-mono-code">{t.nav.searchHint}</kbd>
+          </button>
+
+          <button
+            type="button"
+            class="wonderland-trigger font-mono-code"
+            data-wonderland-toggle
+            aria-pressed="false"
+            aria-label={isId ? 'Aktifkan atau matikan tema Easter Egg Alice in Wonderland' : 'Toggle Alice in Wonderland Easter Egg theme'}
+            title={isId ? 'Easter Egg: Tema Alice in Wonderland (On/Off)' : 'Easter Egg: Alice in Wonderland Theme (On/Off)'}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="13" r="8"></circle>
+              <path d="M12 9v4l2.5 1.5"></path>
+              <path d="M10 2h4"></path>
+              <path d="M12 2v3"></path>
+            </svg>
+            <span class="wl-label">Wonderland</span>
+          </button>
+
+          <a
+            href={alternatePath}
+            class="lang-switch font-mono-code"
+            aria-label={t.nav.langToggle}
+          >
+            {t.nav.langLabel}
+          </a>
+
+          <ThemeToggle label={t.nav.themeToggle} />
+
+          <button
+            type="button"
+            class="mobile-menu-btn"
+            aria-expanded="false"
+            aria-controls="mobile-nav-drawer"
+            data-mobile-menu-btn
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16"></path>
+            </svg>
+            <span>{t.nav.menu}</span>
+          </button>
+        </div>
+      </div>
+
+      <nav
+        id="mobile-nav-drawer"
+        class="mobile-drawer"
+        aria-label={isId ? 'Navigasi seluler' : 'Mobile navigation'}
+        hidden
+      >
+        <div class="wrap mobile-drawer-inner">
+          <a href={`${homeHref}#projects`} data-mobile-link>{t.nav.projects}</a>
+          <a href={`${homeHref}#github-activity`} data-mobile-link>GitHub</a>
+          <a href={`${homeHref}#about`} data-mobile-link>{t.nav.about}</a>
+          <a href={`${homeHref}#contact`} data-mobile-link>{t.nav.contact}</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap footer-inner">
+        <p class="footer-copy">{t.footer.rights}</p>
+        <div class="footer-links">
+          <button
+            type="button"
+            class="footer-term-btn font-mono-code"
+            data-wonderland-toggle
+            aria-pressed="false"
+          >
+            {isId ? '♠ Wonderland (On/Off)' : '♠ Wonderland (On/Off)'}
+          </button>
+          <button
+            type="button"
+            class="footer-term-btn font-mono-code"
+            data-open-terminal
+          >
+            {isId ? 'Terminal (`)' : 'Terminal (`)'}
+          </button>
+          <a href="https://github.com/Snowsant1999" target="_blank" rel="noopener noreferrer">
+            {t.footer.github} ↗
+          </a>
+          <a href="#main-content" class="font-mono-code">{t.footer.backToTop} ↑</a>
+        </div>
+      </div>
+    </footer>
+
+    <CommandPalette client:idle items={paletteItems} locale={locale} />
+    <Terminal client:idle items={paletteItems} locale={locale} />
+
+    <div class="wl-sizer" role="group" aria-label={isId ? 'Ukuran teks Wonderland' : 'Wonderland text size'}>
+      <button type="button" data-wl-size="small" aria-pressed="false" aria-label={isId ? 'Drink me: perkecil teks' : 'Drink me: smaller text'}>
+        {isId ? 'Minum aku' : 'Drink me'}
+      </button>
+      <button type="button" data-wl-size="normal" aria-pressed="true" aria-label={isId ? 'Ukuran teks normal' : 'Normal text size'}>
+        {isId ? 'Pas' : 'Just right'}
+      </button>
+      <button type="button" data-wl-size="large" aria-pressed="false" aria-label={isId ? 'Eat me: perbesar teks' : 'Eat me: larger text'}>
+        {isId ? 'Makan aku' : 'Eat me'}
+      </button>
+    </div>
+
+    <script>
+      import { bindThemeToggles } from '../scripts/theme';
+      import { initDesktopCursor } from '../scripts/cursor';
+      import { initFx } from '../scripts/fx';
+
+      function initGlobalShell() {
+        bindThemeToggles();
+        initDesktopCursor();
+        initFx();
+
+        document.querySelectorAll<HTMLElement>('[data-open-palette]').forEach((btn) => {
+          if (btn.dataset.bound === 'true') return;
+          btn.dataset.bound = 'true';
+          btn.addEventListener('click', () => {
+            window.dispatchEvent(new CustomEvent('palette:open'));
+          });
+        });
+
+        document.querySelectorAll<HTMLElement>('[data-open-terminal]').forEach((btn) => {
+          if (btn.dataset.bound === 'true') return;
+          btn.dataset.bound = 'true';
+          btn.addEventListener('click', () => {
+            window.dispatchEvent(new CustomEvent('terminal:open'));
+          });
+        });
+
+        const menuBtn = document.querySelector<HTMLButtonElement>('[data-mobile-menu-btn]');
+        const drawer = document.getElementById('mobile-nav-drawer');
+        if (!menuBtn || !drawer || menuBtn.dataset.bound === 'true') return;
+        menuBtn.dataset.bound = 'true';
+
+        const closeDrawer = () => {
+          menuBtn.setAttribute('aria-expanded', 'false');
+          drawer.hidden = true;
+        };
+
+        menuBtn.addEventListener('click', () => {
+          const isOpen = menuBtn.getAttribute('aria-expanded') === 'true';
+          menuBtn.setAttribute('aria-expanded', String(!isOpen));
+          drawer.hidden = isOpen;
+        });
+
+        drawer.querySelectorAll('[data-mobile-link]').forEach((link) => {
+          link.addEventListener('click', closeDrawer);
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && menuBtn.getAttribute('aria-expanded') === 'true') {
+            closeDrawer();
+            menuBtn.focus();
+          }
+        });
+      }
+
+      initGlobalShell();
+      document.addEventListener('astro:page-load', initGlobalShell);
+    </script>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    gap: 12px;
+  }
+
+  @media (min-width: 640px) {
+    .nav-inner {
+      height: 68px;
+    }
+  }
+
+  .brand {
+    font-size: 1.1875rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    text-decoration: none;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .brand-year {
+    color: var(--accent);
+  }
+
+  .desktop-nav {
+    display: none;
+    align-items: center;
+    gap: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .desktop-nav {
+      display: flex;
+    }
+  }
+
+  .desktop-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 6px;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease-out);
+  }
+
+  .desktop-nav a:hover {
+    color: var(--accent);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .palette-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background-color: var(--surface);
+    color: var(--text);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);
+  }
+
+  .palette-trigger:hover {
+    background-color: var(--surface-tint);
+    border-color: var(--accent);
+  }
+
+  .palette-kbd {
+    display: none;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--surface-tint);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.6875rem;
+  }
+
+  @media (min-width: 640px) {
+    .palette-kbd {
+      display: inline-block;
+    }
+  }
+
+  .wonderland-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 44px;
+    padding: 0 11px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background-color: var(--surface);
+    color: var(--text);
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+  }
+
+  .wonderland-trigger:hover {
+    background-color: var(--surface-tint);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .wonderland-trigger.wonderland-active,
+  .footer-term-btn.wonderland-active {
+    background-color: var(--accent);
+    color: var(--accent-text);
+    border-color: var(--accent);
+  }
+
+  .wl-label {
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    .wl-label {
+      display: inline;
+    }
+  }
+
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background-color: var(--surface);
+    color: var(--text);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);
+  }
+
+  .lang-switch:hover {
+    background-color: var(--surface-tint);
+    border-color: var(--accent);
+  }
+
+  .mobile-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background-color: var(--surface);
+    color: var(--text);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .mobile-menu-btn:hover {
+    background-color: var(--surface-tint);
+    border-color: var(--accent);
+  }
+
+  @media (min-width: 768px) {
+    .mobile-menu-btn {
+      display: none;
+    }
+  }
+
+  .mobile-drawer {
+    border-top: 1px solid var(--border);
+    background-color: var(--surface);
+  }
+
+  .mobile-drawer-inner {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0;
+  }
+
+  .mobile-drawer-inner a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 8px;
+    color: var(--text);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 8px;
+  }
+
+  .mobile-drawer-inner a:hover {
+    background-color: var(--surface-tint);
+    color: var(--accent);
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--border);
+    background-color: var(--surface);
+    padding: 28px 0;
+    margin-top: 64px;
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .footer-copy {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .footer-term-btn {
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-tint);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .footer-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--accent);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .footer-links a:hover {
+    text-decoration: underline;
+  }
+</style>

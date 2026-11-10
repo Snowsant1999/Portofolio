@@ -1,0 +1,38 @@
+{
+  "siteTitle": "Snowsant1999 | Software Developer Portfolio",
+  "siteDescription": "Portfolio of Snowsant1999: web applications (Laravel/PHP), desktop systems (Java), personal AI assistants (Python), blockchain smart contracts (Solidity), and cloud roadmaps (JavaScript).",
+  "skipToContent": "Skip to main content",
+  "nav": {
+    "projects": "Projects",
+    "stack": "Stack",
+    "about": "About",
+    "contact": "Contact",
+    "search": "Search & Commands",
+    "searchHint": "Ctrl K",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "themeToggle": "Switch color theme",
+    "langToggle": "Switch language to Indonesian",
+    "langLabel": "ID"
+  },
+  "hero": {
+    "role": "Software developer building across Web, AI, Desktop, Cloud, and Blockchain.",
+    "headline": "Turning code into working systems.",
+    "subheadline": "I am Snowsant1999. Here you can inspect six open-source repositories from my GitHub, test an interactive preview of Alice_Ai, filter work by programming language, and reach me in two clicks.",
+    "viewProjects": "Inspect Projects",
+    "contactMe": "Get in Touch",
+    "downloadCv": "Download CV (PDF)"
+  },
+  "footer": {
+    "rights": "Snowsant1999. Built with Astro & generative SVG snow crystals.",
+    "github": "GitHub Profile",
+    "backToTop": "Back to top"
+  },
+  "notFound": {
+    "title": "404: Page Melted Away",
+    "description": "The page you requested does not exist or has moved. Use one of the links below to return to the portfolio.",
+    "backHome": "Return to Homepage",
+    "browseProjects": "Browse Projects"
+  }
+}
+

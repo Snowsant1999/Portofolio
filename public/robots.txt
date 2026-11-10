@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://snowsant1999.github.io/Portofolio/sitemap-index.xml

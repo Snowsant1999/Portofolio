@@ -1,0 +1,38 @@
+{
+  "siteTitle": "Snowsant1999 | Portofolio Pengembang Perangkat Lunak",
+  "siteDescription": "Portofolio Snowsant1999: aplikasi web (Laravel/PHP), sistem desktop (Java), asisten AI pribadi (Python), smart contract blockchain (Solidity), dan peta belajar cloud (JavaScript).",
+  "skipToContent": "Lewati ke konten utama",
+  "nav": {
+    "projects": "Proyek",
+    "stack": "Stack",
+    "about": "Tentang",
+    "contact": "Kontak",
+    "search": "Cari & Perintah",
+    "searchHint": "Ctrl K",
+    "menu": "Menu",
+    "closeMenu": "Tutup menu",
+    "themeToggle": "Ganti tema warna",
+    "langToggle": "Ganti bahasa ke Inggris",
+    "langLabel": "EN"
+  },
+  "hero": {
+    "role": "Pengembang perangkat lunak lintas Web, AI, Desktop, Cloud, dan Blockchain.",
+    "headline": "Mengubah kode menjadi sistem nyata.",
+    "subheadline": "Saya Snowsant1999. Di sini Anda bisa memeriksa enam repositori terbuka dari GitHub saya, mencoba pratinjau interaktif Alice_Ai, menyaring karya berdasarkan bahasa pemrograman, dan menghubungi saya dalam dua klik.",
+    "viewProjects": "Lihat Proyek",
+    "contactMe": "Hubungi Saya",
+    "downloadCv": "Unduh CV (PDF)"
+  },
+  "footer": {
+    "rights": "Snowsant1999. Dibangun dengan Astro & kristal salju SVG generatif.",
+    "github": "Profil GitHub",
+    "backToTop": "Kembali ke atas"
+  },
+  "notFound": {
+    "title": "404: Halaman Meleleh",
+    "description": "Halaman yang Anda cari tidak ditemukan atau sudah berpindah. Gunakan tautan di bawah untuk kembali ke portofolio.",
+    "backHome": "Kembali ke Beranda",
+    "browseProjects": "Lihat Daftar Proyek"
+  }
+}
+

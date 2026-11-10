@@ -1,0 +1,449 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Crystal from './Crystal.astro';
+import ProjectVisual from './ProjectVisual.astro';
+import { getGitHubSnapshot } from '../data/github';
+import { withBase, type Locale } from '../i18n';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  prevProject?: CollectionEntry<'projects'>;
+  nextProject?: CollectionEntry<'projects'>;
+  locale?: Locale;
+}
+
+const { project, prevProject, nextProject, locale = 'en' } = Astro.props;
+const isId = locale === 'id';
+const d = project.data;
+
+const gh = await getGitHubSnapshot();
+const liveMeta = gh.repos[d.repoName];
+const homePath = isId ? withBase('/id/') : withBase('/');
+const projectBase = isId ? '/id/projects/' : '/projects/';
+const pushedDate = (liveMeta?.pushedAt ?? '').slice(0, 10) || String(d.year);
+---
+
+<article class="wrap detail-wrap">
+  <nav class="breadcrumb font-mono-code" aria-label={isId ? 'Jejaran halaman' : 'Breadcrumb'}>
+    <a href={`${homePath}#projects`}>← {isId ? 'Kembali ke semua proyek' : 'Back to all projects'}</a>
+    <span aria-hidden="true">/</span>
+    <span>0{d.order} · {d.title}</span>
+  </nav>
+
+  <header class="detail-hero">
+    <div class="detail-hero-main">
+      <div class="detail-eyebrow font-mono-code">
+        <span>{d.categoryLabel}</span>
+        <span>·</span>
+        <span>{d.year}</span>
+        {liveMeta && liveMeta.stargazersCount > 0 && (
+          <>
+            <span>·</span>
+            <span>★ {liveMeta.stargazersCount} Star</span>
+          </>
+        )}
+      </div>
+
+      <h1 class="font-display detail-title" transition:name={`title-${d.slug}`}>
+        {d.title}
+      </h1>
+
+      <p class="detail-summary">
+        {d.summary[locale]}
+      </p>
+
+      <div class="detail-tags">
+        {d.stack.map((tag) => (
+          <span class="tag-stack">{tag}</span>
+        ))}
+      </div>
+
+      <div class="detail-actions">
+        <a
+          class="btn btn-primary"
+          href={d.repoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>{isId ? 'Buka Repositori GitHub' : 'Open GitHub Repository'}</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+        <a class="btn btn-secondary" href={`${homePath}#contact`}>
+          <span>{isId ? 'Diskusikan Proyek Ini' : 'Discuss This Project'}</span>
+        </a>
+      </div>
+    </div>
+
+    <aside class="detail-crystal-box" transition:name={`crystal-${d.slug}`}>
+      <Crystal
+        name={d.repoName}
+        language={d.primaryLanguage}
+        size={180}
+        label={`Snow crystal identity for ${d.title}`}
+      />
+      <div class="crystal-meta font-mono-code">
+        <span>repo: {d.repoName}</span>
+        <span>updated: {pushedDate}</span>
+      </div>
+    </aside>
+  </header>
+
+  <section class="visual-showcase" aria-labelledby="visual-heading">
+    <div class="showcase-head">
+      <h2 id="visual-heading" class="font-display">
+        {isId ? 'Pratinjau Antarmuka & Konsep' : 'Interface & Concept Preview'}
+      </h2>
+      <button type="button" class="btn btn-ghost font-mono-code" data-open-lightbox>
+        {isId ? 'Perbesar Pratinjau (Zoom)' : 'Inspect Full Preview (Zoom)'}
+      </button>
+    </div>
+
+    <ProjectVisual category={d.category} slug={d.slug} />
+
+    <p class="status-banner font-mono-code">
+      {d.statusNote[locale]}
+    </p>
+  </section>
+
+  <dialog id="preview-lightbox" class="lightbox-dialog" aria-label={`${d.title} preview`}>
+    <div class="lightbox-inner">
+      <div class="lightbox-top">
+        <strong class="font-display">{d.title} · {d.categoryLabel}</strong>
+        <button type="button" class="btn btn-secondary" data-close-lightbox>
+          {isId ? 'Tutup (Esc)' : 'Close (Esc)'}
+        </button>
+      </div>
+      <div class="lightbox-body">
+        <ProjectVisual category={d.category} slug={d.slug} />
+      </div>
+    </div>
+  </dialog>
+
+  <div class="case-grid">
+    <section class="case-card">
+      <span class="case-label font-mono-code">01 / {isId ? 'MASALAH' : 'PROBLEM'}</span>
+      <h2 class="font-display">{isId ? 'Latar Belakang Masalah' : 'The Challenge'}</h2>
+      <p>{d.problem[locale]}</p>
+    </section>
+
+    <section class="case-card">
+      <span class="case-label font-mono-code">02 / {isId ? 'SOLUSI' : 'SOLUTION'}</span>
+      <h2 class="font-display">{isId ? 'Pendekatan & Solusi' : 'Technical Solution'}</h2>
+      <p>{d.solution[locale]}</p>
+    </section>
+
+    <section class="case-card">
+      <span class="case-label font-mono-code">03 / {isId ? 'PERAN PRIBADI' : 'PERSONAL ROLE'}</span>
+      <h2 class="font-display">{isId ? 'Kontribusi Snowsant1999' : 'My Role & Ownership'}</h2>
+      <p>{d.role[locale]}</p>
+    </section>
+  </div>
+
+  <section class="highlights-section">
+    <h2 class="font-display">{isId ? 'Sorotan Teknis Utama' : 'Key Technical Highlights'}</h2>
+    <ul class="highlights-list">
+      {d.highlights[locale].map((item) => (
+        <li>{item}</li>
+      ))}
+    </ul>
+  </section>
+
+  <nav class="project-pager" aria-label={isId ? 'Navigasi proyek lainnya' : 'Other projects navigation'}>
+    {prevProject ? (
+      <a class="pager-card" href={withBase(`${projectBase}${prevProject.data.slug}`)}>
+        <span class="font-mono-code">← {isId ? 'Proyek Sebelumnya' : 'Previous Project'}</span>
+        <strong class="font-display">{prevProject.data.title}</strong>
+      </a>
+    ) : <div />}
+
+    {nextProject ? (
+      <a class="pager-card pager-next" href={withBase(`${projectBase}${nextProject.data.slug}`)}>
+        <span class="font-mono-code">{isId ? 'Proyek Berikutnya' : 'Next Project'} →</span>
+        <strong class="font-display">{nextProject.data.title}</strong>
+      </a>
+    ) : <div />}
+  </nav>
+</article>
+
+<script>
+  function initDetailLightbox() {
+    const openBtn = document.querySelector<HTMLButtonElement>('[data-open-lightbox]');
+    const closeBtn = document.querySelector<HTMLButtonElement>('[data-close-lightbox]');
+    const dialog = document.getElementById('preview-lightbox') as HTMLDialogElement | null;
+
+    if (!openBtn || !dialog || openBtn.dataset.bound === 'true') return;
+    openBtn.dataset.bound = 'true';
+
+    openBtn.addEventListener('click', () => {
+      dialog.showModal();
+    });
+
+    closeBtn?.addEventListener('click', () => {
+      dialog.close();
+      openBtn.focus();
+    });
+
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) {
+        dialog.close();
+        openBtn.focus();
+      }
+    });
+  }
+
+  initDetailLightbox();
+  document.addEventListener('astro:page-load', initDetailLightbox);
+</script>
+
+<style>
+  .detail-wrap {
+    padding-top: 32px;
+    padding-bottom: 48px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  .breadcrumb a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .detail-hero {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    align-items: center;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  @media (min-width: 840px) {
+    .detail-hero {
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 40px;
+    }
+  }
+
+  .detail-eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .detail-title {
+    font-size: clamp(2rem, 4.2vw, 3rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    margin: 10px 0 14px;
+  }
+
+  .detail-summary {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin: 0 0 18px;
+    max-width: 60ch;
+  }
+
+  .detail-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .detail-crystal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    color: var(--accent);
+    box-shadow: var(--shadow);
+  }
+
+  .crystal-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .visual-showcase {
+    padding: 36px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .showcase-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .showcase-head h2 {
+    margin: 0;
+    font-size: 1.35rem;
+  }
+
+  .status-banner {
+    margin: 14px 0 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .lightbox-dialog {
+    width: min(760px, calc(100% - 32px));
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--text);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .lightbox-dialog::backdrop {
+    background: rgba(11, 31, 51, 0.65);
+  }
+
+  .lightbox-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 36px 0;
+  }
+
+  @media (min-width: 840px) {
+    .case-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .case-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+  }
+
+  .case-label {
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .case-card h2 {
+    font-size: 1.125rem;
+    margin: 8px 0 10px;
+  }
+
+  .case-card p {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
+
+  .highlights-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 36px;
+  }
+
+  .highlights-section h2 {
+    margin: 0 0 12px;
+    font-size: 1.25rem;
+  }
+
+  .highlights-list {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text-muted);
+    display: grid;
+    gap: 8px;
+  }
+
+  .project-pager {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  @media (min-width: 640px) {
+    .project-pager {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .pager-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px 20px;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color var(--dur) var(--ease-out), background-color var(--dur) var(--ease-out);
+  }
+
+  .pager-card:hover {
+    border-color: var(--accent);
+    background: var(--surface-tint);
+  }
+
+  .pager-card span {
+    font-size: 0.75rem;
+    color: var(--accent);
+  }
+
+  .pager-next {
+    text-align: right;
+  }
+</style>
+
